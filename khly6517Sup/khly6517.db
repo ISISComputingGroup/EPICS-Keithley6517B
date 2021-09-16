@@ -7,6 +7,7 @@ record(stringin, "$(P)FUNC")
     info(INTEREST, "HIGH")
     info(archive, "VAL")
     info(alarm, "khly6517")
+    field(UDFS, "NO_ALARM")
 }
 
 record(stringout, "$(P)FUNC:SP")
@@ -27,6 +28,7 @@ record(stringin, "$(P)READ")
     field(INP, "@khly6517.proto getRead() $(PORT)")
     info(INTEREST, "HIGH")
     info(archive, "VAL")
+    field(UDFS, "NO_ALARM")
 }
 
 record(stringin, "$(P)CURR:DC:RANG")
@@ -36,6 +38,7 @@ record(stringin, "$(P)CURR:DC:RANG")
     field(DTYP, "stream")
     field(INP, "@khly6517.proto getRangCurr() $(PORT)")
     info(INTEREST, "HIGH")
+    field(UDFS, "NO_ALARM")
 }
 
 record(stringin, "$(P)VOLT:DC:RANG")
@@ -45,6 +48,7 @@ record(stringin, "$(P)VOLT:DC:RANG")
     field(DTYP, "stream")
     field(INP, "@khly6517.proto getRangVolt() $(PORT)")
     info(INTEREST, "HIGH")
+    field(UDFS, "NO_ALARM")
 }
 
 record(ao, "$(P)CURR:DC:RANG:SP")
@@ -74,6 +78,7 @@ record(ai, "$(P)SYST:ERR")
     field(DTYP, "stream")
     field(INP, "@khly6517.proto getErr() $(PORT)")
     info(INTEREST, "MEDIUM")
+    field(UDFS, "NO_ALARM")
 }
 
 record(ai, "$(P)STAT:QUE")
@@ -83,6 +88,7 @@ record(ai, "$(P)STAT:QUE")
     field(DTYP, "stream")
     field(INP, "@khly6517.proto getQue() $(PORT)")
     info(INTEREST, "MEDIUM")
+    field(UDFS, "NO_ALARM")
 }
 
 record(ao, "$(P)*CLS")
