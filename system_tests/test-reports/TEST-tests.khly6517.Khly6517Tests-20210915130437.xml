@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210915130437" tests="5" file="tests/khly6517.py" time="10.028" timestamp="2021-09-15T13:05:00" failures="0" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_button_current_pressed_THEN_PVs_set" time="0.427" timestamp="2021-09-15T13:04:50" file="tests\khly6517.py" line="88"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_button_pressed_THEN_queue_cleared" time="2.793" timestamp="2021-09-15T13:04:53" file="tests\khly6517.py" line="68"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown" time="1.672" timestamp="2021-09-15T13:04:54" file="tests\khly6517.py" line="56"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_func" time="2.451" timestamp="2021-09-15T13:04:57" file="tests\khly6517.py" line="48"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_rang" time="2.686" timestamp="2021-09-15T13:05:00" file="tests\khly6517.py" line="52"/>
+</testsuite>

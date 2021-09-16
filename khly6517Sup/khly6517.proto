@@ -1,0 +1,61 @@
+##################################################
+#
+# Protocol file for Keithley 6517B
+#
+##################################################
+
+Terminator = CR LF;
+
+getMode {
+    out "FUNC?";
+    in "%s";
+}
+
+setMode {
+    out "FUNC '%s'";
+}
+
+getRead {
+    out "READ?";
+    in "%s";
+}
+
+getRangCurr {
+    out "CURR:DC:RANGE?";
+    in "%s";
+}  
+
+getRangVolt {
+    out "VOLT:DC:RANGE?";
+    in "%s";
+}  
+
+setRangCurr {
+    out "CURR:DC:RANG %f";
+}
+
+setRangVolt {
+    out "VOLT:DC:RANG %f";
+}
+
+getErr {
+    out ":SYST:ERR?";
+    in "%f";
+}
+
+getQue {
+    out ":STAT:QUE?";
+    in "%f";
+}
+
+clearQue {
+    out "*CLS";
+}
+
+setVoltage {
+    out "FUNC VOLT"
+}
+
+setCurrent {
+    out "FUNC CURR"
+}

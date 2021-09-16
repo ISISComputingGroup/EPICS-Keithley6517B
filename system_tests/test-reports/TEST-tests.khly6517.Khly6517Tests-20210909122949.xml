@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210909122949" tests="1" file="tests/khly6517.py" time="7.232" timestamp="2021-09-09T12:30:09" failures="1" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test1" time="7.232" timestamp="2021-09-09T12:30:09" file="tests\khly6517.py" line="32">
+		<failure type="AssertionError" message="PV TE:NDW1798:KHLY6517_01:FUNC:SP does not exist"><![CDATA[Traceback (most recent call last):
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 34, in test1
+    self.ca.set_pv_value("FUNC", "CURR")
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 553, in assert_setting_setpoint_sets_readback
+    self.set_pv_value(set_point_pv, value, sleep_after_set=0)
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 119, in set_pv_value
+    self.assert_that_pv_exists(pv)
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 482, in assert_that_pv_exists
+    raise AssertionError("PV {pv} does not exist".format(pv=pv))
+AssertionError: PV TE:NDW1798:KHLY6517_01:FUNC:SP does not exist
+]]></failure>
+	</testcase>
+</testsuite>

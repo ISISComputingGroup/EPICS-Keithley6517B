@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210909122733" tests="1" file="tests/khly6517.py" time="1.163" timestamp="2021-09-09T12:27:47" failures="0" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_that_fails" time="1.163" timestamp="2021-09-09T12:27:47" file="tests\khly6517.py" line="32"/>
+</testsuite>

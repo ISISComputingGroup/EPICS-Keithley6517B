@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210915140353" tests="7" file="tests/khly6517.py" time="21.028" timestamp="2021-09-15T14:04:27" failures="1" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_button_current_pressed_THEN_PVs_set" time="0.460" timestamp="2021-09-15T14:04:06" file="tests\khly6517.py" line="89"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_button_pressed_THEN_queue_cleared" time="3.691" timestamp="2021-09-15T14:04:10" file="tests\khly6517.py" line="69"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_buttons_pressed_THEN_readings_read_from_device" time="1.810" timestamp="2021-09-15T14:04:12" file="tests\khly6517.py" line="115"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_errors_added_THEN_refresh_clears_queue_over_time" time="3.340" timestamp="2021-09-15T14:04:15" file="tests\khly6517.py" line="104"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_func" time="2.429" timestamp="2021-09-15T14:04:24" file="tests\khly6517.py" line="49"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_rang" time="2.682" timestamp="2021-09-15T14:04:27" file="tests\khly6517.py" line="53"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown" time="6.616" timestamp="2021-09-15T14:04:22" file="tests\khly6517.py" line="57">
+		<failure type="AssertionError" message="Expected PV, 'TE:NDW1798:KHLY6517_01:STAT:QUE' to have value '5' (type: 'int').
+Final PV value was '0.0' (type: 'float')"><![CDATA[Traceback (most recent call last):
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 66, in test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown
+    self.ca.assert_that_pv_is("STAT:QUE", 5)
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 269, in assert_that_pv_is
+    return self.assert_that_pv_value_causes_func_to_return_true(
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 248, in assert_that_pv_value_causes_func_to_return_true
+    raise AssertionError(err)
+AssertionError: Expected PV, 'TE:NDW1798:KHLY6517_01:STAT:QUE' to have value '5' (type: 'int').
+Final PV value was '0.0' (type: 'float')
+]]></failure>
+	</testcase>
+</testsuite>

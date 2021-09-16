@@ -1,0 +1,134 @@
+record(stringin, "$(P)FUNC")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Operating mode")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getMode() $(PORT)")
+    info(INTEREST, "HIGH")
+    info(archive, "VAL")
+    info(alarm, "khly6517")
+}
+
+record(stringout, "$(P)FUNC:SP")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Operating mode")
+    field(DTYP, "stream")
+    field(OUT, "@khly6517.proto setMode $(PORT)")
+    field(VAL, "CURR:DC")
+    field(FLNK, "$(P)FUNC")
+}
+
+record(stringin, "$(P)READ")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "stream")
+    field(DESC, "Reading")
+    field(INP, "@khly6517.proto getRead() $(PORT)")
+    info(INTEREST, "HIGH")
+    info(archive, "VAL")
+}
+
+record(stringin, "$(P)CURR:DC:RANG")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Current range")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getRangCurr() $(PORT)")
+    info(INTEREST, "HIGH")
+}
+
+record(stringin, "$(P)VOLT:DC:RANG")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Current range")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getRangVolt() $(PORT)")
+    info(INTEREST, "HIGH")
+}
+
+record(ao, "$(P)CURR:DC:RANG:SP")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Current range")
+    field(PREC, 7)
+    field(DTYP, "stream")
+    field(OUT, "@khly6517.proto setRangCurr() $(PORT)")
+    field(FLNK, "$(P)CURR:DC:RANG")
+}
+
+record(ao, "$(P)VOLT:DC:RANG:SP")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Current range")
+    field(PREC, 7)
+    field(DTYP, "stream")
+    field(OUT, "@khly6517.proto setRangVolt() $(PORT)")
+    field(FLNK, "$(P)VOLT:DC:RANG")
+}
+
+record(ai, "$(P)SYST:ERR")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Oldest error")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getErr() $(PORT)")
+    info(INTEREST, "MEDIUM")
+}
+
+record(ai, "$(P)STAT:QUE")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Oldest error")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getQue() $(PORT)")
+    info(INTEREST, "MEDIUM")
+}
+
+record(ao, "$(P)*CLS")
+{
+    field(SCAN, "Passive")
+    field(DESC, "Clear error queue")
+    field(DTYP, "stream")
+    field(OUT, "@khly6517.proto clearQue() $(PORT)")
+}
+
+record(ao, "$(P)RANG:MODE")
+{
+    field(DESC, "Device mode state")
+    field(VAL, "0")
+}
+
+record(sseq, "$(P)BTN:CURR")
+{
+    field(SCAN, "Passive")
+    field(LNK1, "$(P)*CLS PP")
+    field(LNK2, "$(P)FUNC:SP PP")
+    field(LNK3, "$(P)CURR:DC:RANG:SP PP")
+    field(LNK4, "$(P)RANG:MODE PP")
+    field(LNK5, "$(P)READ PP")
+    field(STR2, "CURR:DC")
+    field(DO3, "0.02")
+    field(DO4, "0")
+}
+
+record(sseq, "$(P)BTN:VOLT")
+{
+    field(SCAN, "Passive")
+    field(LNK1, "$(P)*CLS PP")
+    field(LNK2, "$(P)FUNC:SP PP")
+    field(LNK3, "$(P)VOLT:DC:RANG:SP PP")
+    field(LNK4, "$(P)RANG:MODE PP")
+    field(LNK5, "$(P)READ PP")
+    field(STR2, "VOLT:DC")
+    field(DO3, "2")
+    field(DO4, "1")
+}
+
+record(seq, "$(P)FUNC:REFRESH")
+{
+    field(SCAN, "1 second")
+    field(LNK1, "$(P)FUNC PP")
+    field(LNK2, "$(P)SYST:ERR PP")
+    field(LNK3, "$(P)STAT:QUE PP")
+}

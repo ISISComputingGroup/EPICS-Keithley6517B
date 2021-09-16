@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210915130659" tests="1" file="tests/khly6517.py" time="3.384" timestamp="2021-09-15T13:07:15" failures="0" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_errors_added_THEN_refresh_clears_queue_over_time" time="3.384" timestamp="2021-09-15T13:07:15" file="tests\khly6517.py" line="103"/>
+</testsuite>

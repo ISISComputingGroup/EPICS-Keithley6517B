@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210915140305" tests="1" file="tests/khly6517.py" time="1.880" timestamp="2021-09-15T14:03:20" failures="0" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_buttons_pressed_THEN_readings_read_from_device" time="1.880" timestamp="2021-09-15T14:03:20" file="tests\khly6517.py" line="117">
+		<system-out><![CDATA[checking: BTN:VOLT, val: 0.1
+
+success
+
+checking: BTN:VOLT, val: 1.1
+
+success
+
+checking: BTN:CURR, val: 0.005
+
+success
+
+checking: BTN:VOLT, val: 2
+
+success
+
+checking: BTN:CURR, val: 0.01
+
+success
+
+checking: BTN:CURR, val: 0.02
+
+success
+
+checking: BTN:CURR, val: 0.02
+
+success
+
+checking: BTN:VOLT, val: 2
+
+success
+
+]]></system-out>
+	</testcase>
+</testsuite>

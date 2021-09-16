@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210915123732" tests="1" file="tests/khly6517.py" time="6.377" timestamp="2021-09-15T12:37:51" failures="1" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated" time="6.377" timestamp="2021-09-15T12:37:51" file="tests\khly6517.py" line="31">
+		<failure type="AssertionError" message="Expected PV, 'TE:NDW1798:KHLY6517_01:FUNC' to have value 'CURR' (type: 'str').
+Final PV value was 'VOLT' (type: 'str')"><![CDATA[Traceback (most recent call last):
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 37, in test_WHEN_set_pv_is_set_THEN_pv_updated
+    self.ca.assert_that_pv_is("FUNC", "CURR")
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 269, in assert_that_pv_is
+    return self.assert_that_pv_value_causes_func_to_return_true(
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 248, in assert_that_pv_value_causes_func_to_return_true
+    raise AssertionError(err)
+AssertionError: Expected PV, 'TE:NDW1798:KHLY6517_01:FUNC' to have value 'CURR' (type: 'str').
+Final PV value was 'VOLT' (type: 'str')
+]]></failure>
+	</testcase>
+</testsuite>

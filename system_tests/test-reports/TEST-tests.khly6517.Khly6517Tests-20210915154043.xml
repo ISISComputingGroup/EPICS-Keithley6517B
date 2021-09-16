@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tests.khly6517.Khly6517Tests-20210915154043" tests="7" file="tests/khly6517.py" time="24.731" timestamp="2021-09-15T15:41:20" failures="2" errors="0" skipped="0">
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_button_current_pressed_THEN_PVs_set" time="0.464" timestamp="2021-09-15T15:40:56" file="tests\khly6517.py" line="92"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_button_pressed_THEN_queue_cleared" time="3.758" timestamp="2021-09-15T15:41:00" file="tests\khly6517.py" line="69"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_errors_added_THEN_refresh_clears_queue_over_time" time="3.410" timestamp="2021-09-15T15:41:10" file="tests\khly6517.py" line="107"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown" time="1.701" timestamp="2021-09-15T15:41:11" file="tests\khly6517.py" line="57"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_func" time="2.426" timestamp="2021-09-15T15:41:14" file="tests\khly6517.py" line="49"/>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_buttons_pressed_THEN_readings_read_from_device" time="6.620" timestamp="2021-09-15T15:41:06" file="tests\khly6517.py" line="122">
+		<failure type="AssertionError" message="Expected PV, 'TE:NDW1798:KHLY6517_01:READ' to have value '2' (type: 'str').
+Final PV value was '2.0' (type: 'str')"><![CDATA[Traceback (most recent call last):
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 140, in test_WHEN_buttons_pressed_THEN_readings_read_from_device
+    self.button_and_check(test_answer_expected_volt[checkingOrder[i][0]], volt)
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 120, in button_and_check
+    self.ca.assert_that_pv_is("READ", str(expectedReading))
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 269, in assert_that_pv_is
+    return self.assert_that_pv_value_causes_func_to_return_true(
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 248, in assert_that_pv_value_causes_func_to_return_true
+    raise AssertionError(err)
+AssertionError: Expected PV, 'TE:NDW1798:KHLY6517_01:READ' to have value '2' (type: 'str').
+Final PV value was '2.0' (type: 'str')
+]]></failure>
+	</testcase>
+	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_rang" time="6.351" timestamp="2021-09-15T15:41:20" file="tests\khly6517.py" line="53">
+		<failure type="AssertionError" message="Expected PV, 'TE:NDW1798:KHLY6517_01:CURR:DC:RANG' to have value '10' (type: 'str').
+Final PV value was '10.0' (type: 'str')"><![CDATA[Traceback (most recent call last):
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 54, in test_WHEN_set_pv_is_set_THEN_pv_updated_rang
+    self.set_and_check("CURR:DC:RANG:SP", 10, "CURR:DC:RANG", "10")
+  File "C:\Instrument\Apps\EPICS\support\khly6517\master\system_tests\tests\khly6517.py", line 47, in set_and_check
+    self.ca.assert_that_pv_is(checkPVname, checkPVvalue)
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 269, in assert_that_pv_is
+    return self.assert_that_pv_value_causes_func_to_return_true(
+  File "C:\Instrument\Apps\EPICS\support\IocTestFramework\master\utils\channel_access.py", line 248, in assert_that_pv_value_causes_func_to_return_true
+    raise AssertionError(err)
+AssertionError: Expected PV, 'TE:NDW1798:KHLY6517_01:CURR:DC:RANG' to have value '10' (type: 'str').
+Final PV value was '10.0' (type: 'str')
+]]></failure>
+	</testcase>
+</testsuite>
