@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tests.khly6517.Khly6517Tests-20210909115632" tests="1" file="tests/khly6517.py" time="0.061" timestamp="2021-09-09T11:56:45" failures="0" errors="0" skipped="0">
-	<testcase classname="tests.khly6517.Khly6517Tests" name="test_that_fails" time="0.061" timestamp="2021-09-09T11:56:45" file="tests\khly6517.py" line="33"/>
-</testsuite>

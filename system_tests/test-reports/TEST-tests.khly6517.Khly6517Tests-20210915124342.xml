@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tests.khly6517.Khly6517Tests-20210915124342" tests="1" file="tests/khly6517.py" time="2.553" timestamp="2021-09-15T12:43:58" failures="0" errors="0" skipped="0">
-	<testcase classname="tests.khly6517.Khly6517Tests" name="test_WHEN_set_pv_is_set_THEN_pv_updated_func" time="2.553" timestamp="2021-09-15T12:43:58" file="tests\khly6517.py" line="40"/>
-</testsuite>
