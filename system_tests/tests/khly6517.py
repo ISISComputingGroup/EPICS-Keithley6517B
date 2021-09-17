@@ -4,6 +4,7 @@ from utils.channel_access import ChannelAccess
 from utils.ioc_launcher import get_default_ioc_dir
 from utils.test_modes import TestModes
 from utils.testing import get_running_lewis_and_ioc, skip_if_recsim
+from parameterized import parameterized
 import time
 import random
 
@@ -28,31 +29,23 @@ class Khly6517Tests(unittest.TestCase):
 
     def setUp(self):
         self._lewis, self._ioc = get_running_lewis_and_ioc("Khly6517", DEVICE_PREFIX)
-        self.ca = ChannelAccess(device_prefix=DEVICE_PREFIX)
+        self.ca = ChannelAccess(default_timeout=5, device_prefix=DEVICE_PREFIX, default_wait_time=0.0)
 
     def set_pv(self, pvName, pvVal):
         self.ca.assert_that_pv_exists(pvName)
         self.ca.set_pv_value(pvName, pvVal)
-        self.ca.process_pv(pvName)
         self.ca.assert_that_pv_is(pvName, pvVal)
 
-    def set_and_check(self, setpointPVname, setpointPVvalue, checkPVname, checkPVvalue):
-        # Sets the setpoint PV and checks if checkPV was updated to expected value
-        self.ca.assert_that_pv_exists(setpointPVname)
-        self.ca.assert_that_pv_exists(checkPVname)
-        self.ca.set_pv_value(setpointPVname, setpointPVvalue)
-        self.ca.process_pv(setpointPVname)
-        self.ca.assert_that_pv_is(setpointPVname, setpointPVvalue)
-        self.ca.process_pv(checkPVname)
-        self.ca.assert_that_pv_is(checkPVname, checkPVvalue)
-
     def test_WHEN_set_pv_is_set_THEN_pv_updated_func(self):
-        self.set_and_check("FUNC:SP", "VOLT:DC", "FUNC", "VOLT")
-        self.set_and_check("FUNC:SP", "CURR:DC", "FUNC", "CURR")
+        self.ca.assert_setting_setpoint_sets_readback("VOLT:DC", "FUNC", "FUNC:SP", "VOLT")
+        self.ca.assert_setting_setpoint_sets_readback("CURR:DC", "FUNC", "FUNC:SP", "CURR")
 
-    def test_WHEN_set_pv_is_set_THEN_pv_updated_rang(self):
-        self.set_and_check("CURR:DC:RANG:SP", 10, "CURR:DC:RANG", "10.0")
-        self.set_and_check("VOLT:DC:RANG:SP", 5, "VOLT:DC:RANG", "5.0")
+    @parameterized.expand([
+        (10, ),
+        (5, )
+    ])
+    def test_WHEN_set_pv_is_set_THEN_pv_updated_rang(self, setpoint):
+        self.ca.assert_setting_setpoint_sets_readback(setpoint, "CURR:DC:RANG", "CURR:DC:RANG:SP", str(setpoint)+".0")
 
     def test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown(self):
         # First lets make sure queue is clear
@@ -69,13 +62,17 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("STAT:QUE", 5, 3)
         self.ca.assert_that_pv_is("SYST:ERR", 10, 3)
 
-    def test_WHEN_button_pressed_THEN_queue_cleared(self):
+    @parameterized.expand([
+        ("BTN:CURR", ),
+        ("BTN:VOLT", )
+    ])
+    def test_WHEN_button_pressed_THEN_queue_cleared(self, btn):
         # First lets make sure queue is clear
         self.ca.assert_that_pv_exists("*CLS")
         self.ca.process_pv("*CLS")
 
         self._lewis.backdoor_run_function_on_device("add_mock_errors")
-        self.ca.process_pv("BTN:CURR")
+        self.ca.process_pv(btn)
         self.ca.assert_that_pv_is("SYST:ERR", 0)
         self.ca.assert_that_pv_is("STAT:QUE", 0)
         # This is to double check that REFRESH record didnt add errors as its set to scan 1 second
@@ -83,29 +80,18 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("SYST:ERR", 0)
         self.ca.assert_that_pv_is("STAT:QUE", 0)
 
-        # Check same things for other button
-        self._lewis.backdoor_run_function_on_device("add_mock_errors")
-        self.ca.process_pv("BTN:VOLT")
-        self.ca.assert_that_pv_is("SYST:ERR", 0)
-        self.ca.assert_that_pv_is("STAT:QUE", 0)
-        time.sleep(1)
-        self.ca.assert_that_pv_is("SYST:ERR", 0)
-        self.ca.assert_that_pv_is("STAT:QUE", 0)
-
-    def test_WHEN_button_current_pressed_THEN_PVs_set(self):
-        self.ca.process_pv("BTN:CURR")
+    @parameterized.expand([
+        ("BTN:CURR", "CURR", "CURR:DC:RANG", "0.02", 0),
+        ("BTN:VOLT", "VOLT", "VOLT:DC:RANG", "2.0", 1)
+    ])
+    def test_WHEN_button_current_pressed_THEN_PVs_set(self, btn, mode, rang_mode, setpoint, btn_status):
+        self.ca.process_pv(btn)
         # Test above checks for CLS separately
-        self.ca.assert_that_pv_is("FUNC", "CURR")
+        self.ca.assert_that_pv_is("FUNC", mode)
         # Currently hard-coded to 0.02 in IOC, change this test if this behaviour is changed
-        self.ca.assert_that_pv_is("CURR:DC:RANG", "0.02")
+        self.ca.assert_that_pv_is(rang_mode, setpoint)
         # This PV is for OPI rule to show different RANG readback box. 0=CURR 1=VOLT
-        self.ca.assert_that_pv_is("RANG:MODE", 0)
-
-        # Now the other button. Same comments apply
-        self.ca.process_pv("BTN:VOLT")
-        self.ca.assert_that_pv_is("FUNC", "VOLT")
-        self.ca.assert_that_pv_is("VOLT:DC:RANG", "2.0")
-        self.ca.assert_that_pv_is("RANG:MODE", 1)
+        self.ca.assert_that_pv_is("RANG:MODE", btn_status)
 
     def test_WHEN_errors_added_THEN_refresh_clears_queue_over_time(self):
         # First lets make sure queue is clear

@@ -42,35 +42,38 @@ class SimulatedKhly6517(StateMachineDevice):
         self.idle = False
         self.measurement()
 
-    def getRangedValue(self, value, mode):
-        if mode.lower() == "volt":
-            if value > self.volt_range:
-                # Parameter data out of range
-                self.add_error(-222)
-            return max(min(value, self.volt_range), 0)
-        elif mode.lower() == "curr":
-            if value > self.curr_range:
-                # Parameter data out of range
-                self.add_error(-222)
-            return max(min(value, self.curr_range), 0)
+    def substract_reading(self):
+        if self.function == 0:
+            self.volt_values = self.volt_values[1:]
+        elif self.function == 1:
+            self.curr_values = self.curr_values[1:]
+
+    def get_mode_values(self):
+        if self.function == 0:
+            return [self.volt_range, self.volt_values]
+        elif self.function == 1:
+            return [self.curr_range, self.curr_values]
+
+    def get_ranged_value(self, value):
+        values = self.get_mode_values()
+        if value > values[0]:
+            # Parameter data out of range
+            self.add_error(-222)
+        return max(min(value, values[0]), 0)
+
+    def add_random_reading(self):
+        values = self.get_mode_values()
+        values[1].append(random.random() * values[0])
 
     def measurement(self):
-        if self.function == 0:
-            if self.random_mode:
-                self.volt_values.append(random.random() * self.volt_range)
-            if len(self.volt_values) > 0:
-                self.latest_reading = self.getRangedValue(self.volt_values[0], "volt")
-                self.volt_values = self.volt_values[1:]
-            else:
-                self.latest_reading = 0
-        elif self.function == 1:
-            if self.random_mode:
-                self.curr_values.append(random.random() * self.curr_range)
-            if len(self.curr_values) > 0:
-                self.latest_reading = self.getRangedValue(self.curr_values[0], "curr")
-                self.curr_values = self.curr_values[1:]
-            else:
-                self.latest_reading = 0
+        if self.random_mode:
+            self.add_random_reading()
+        values = self.get_mode_values()
+        if len(values[1]) > 0:
+            self.latest_reading = self.get_ranged_value(values[1][0])
+            self.substract_reading()
+        else:
+            self.latest_reading = 0
 
     def add_error(self, error):
         if len(self.error_queue) < 9:
