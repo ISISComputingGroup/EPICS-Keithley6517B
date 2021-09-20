@@ -1,3 +1,22 @@
+record(bo, "$(P)SIM")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+    field(ZNAM, "NO")
+    field(ONAM, "YES")
+    field(VAL, "$(RECSIM=0)")
+}
+
+record(bo, "$(P)DISABLE") 
+{
+    field(DESC, "Disable comms")
+    field(PINI, "YES")
+    field(VAL, "$(DISABLE=0)")
+    field(OMSL, "supervisory")
+    field(ZNAM, "COMMS ENABLED")
+    field(ONAM, "COMMS DISABLED")
+}
+
 record(stringin, "$(P)FUNC")
 {
     field(SCAN, "Passive")
@@ -8,6 +27,9 @@ record(stringin, "$(P)FUNC")
     info(archive, "VAL")
     info(alarm, "khly6517")
     field(UDFS, "NO_ALARM")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:FUNC")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(stringout, "$(P)FUNC:SP")
@@ -18,6 +40,9 @@ record(stringout, "$(P)FUNC:SP")
     field(OUT, "@khly6517.proto setMode $(PORT)")
     field(VAL, "CURR:DC")
     field(FLNK, "$(P)FUNC")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:FUNC:SP")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(stringin, "$(P)READ")
@@ -29,6 +54,9 @@ record(stringin, "$(P)READ")
     info(INTEREST, "HIGH")
     info(archive, "VAL")
     field(UDFS, "NO_ALARM")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:READ")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(stringin, "$(P)CURR:DC:RANG")
@@ -39,6 +67,9 @@ record(stringin, "$(P)CURR:DC:RANG")
     field(INP, "@khly6517.proto getRangCurr() $(PORT)")
     info(INTEREST, "HIGH")
     field(UDFS, "NO_ALARM")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:CURR:DC:RANG")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(stringin, "$(P)VOLT:DC:RANG")
@@ -49,6 +80,9 @@ record(stringin, "$(P)VOLT:DC:RANG")
     field(INP, "@khly6517.proto getRangVolt() $(PORT)")
     info(INTEREST, "HIGH")
     field(UDFS, "NO_ALARM")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:VOLT:DC:RANG")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(ao, "$(P)CURR:DC:RANG:SP")
@@ -59,6 +93,9 @@ record(ao, "$(P)CURR:DC:RANG:SP")
     field(DTYP, "stream")
     field(OUT, "@khly6517.proto setRangCurr() $(PORT)")
     field(FLNK, "$(P)CURR:DC:RANG")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:CURR:DC:RANG:SP")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(ao, "$(P)VOLT:DC:RANG:SP")
@@ -69,6 +106,9 @@ record(ao, "$(P)VOLT:DC:RANG:SP")
     field(DTYP, "stream")
     field(OUT, "@khly6517.proto setRangVolt() $(PORT)")
     field(FLNK, "$(P)VOLT:DC:RANG")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:VOLT:DC:RANG:SP")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(ai, "$(P)SYST:ERR")
@@ -79,6 +119,9 @@ record(ai, "$(P)SYST:ERR")
     field(INP, "@khly6517.proto getErr() $(PORT)")
     info(INTEREST, "MEDIUM")
     field(UDFS, "NO_ALARM")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:SYST:ERR")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(ai, "$(P)STAT:QUE")
@@ -89,6 +132,9 @@ record(ai, "$(P)STAT:QUE")
     field(INP, "@khly6517.proto getQue() $(PORT)")
     info(INTEREST, "MEDIUM")
     field(UDFS, "NO_ALARM")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:STAT:QUE")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(ao, "$(P)*CLS")
@@ -97,6 +143,9 @@ record(ao, "$(P)*CLS")
     field(DESC, "Clear error queue")
     field(DTYP, "stream")
     field(OUT, "@khly6517.proto clearQue() $(PORT)")
+    field(SIML, "$(P)SIM")
+    field(SIOL, "$(P)SIM:STAT:QUE")
+    field(SDIS, "$(P)DISABLE")
 }
 
 record(ao, "$(P)RANG:MODE")
@@ -151,3 +200,53 @@ record(stringout, "$(P)VOLT:RANGE:CONST")
     field(SCAN, "Passive")
     field(VAL, "2")
 }
+### SIMULATION RECORDS ###
+
+record(ao,"$(P)SIM:*CLS")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+record(stringin,"$(P)SIM:CURR:DC:RANG")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+alias("$(P)SIM:CURR:DC:RANG","$(P)SIM:CURR:DC:RANG:SP")
+
+record(stringin,"$(P)SIM:FUNC")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+alias("$(P)SIM:FUNC","$(P)SIM:FUNC:SP")
+
+record(stringin,"$(P)SIM:READ")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+record(ai,"$(P)SIM:STAT:QUE")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+record(ai,"$(P)SIM:SYST:ERR")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+record(stringin,"$(P)SIM:VOLT:DC:RANG")
+{
+    field(SCAN, "Passive")
+    field(DTYP, "Soft Channel")
+}
+
+alias("$(P)SIM:VOLT:DC:RANG","$(P)SIM:VOLT:DC:RANG:SP")
+
