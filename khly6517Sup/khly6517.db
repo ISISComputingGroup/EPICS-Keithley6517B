@@ -114,7 +114,7 @@ record(sseq, "$(P)BTN:CURR")
     field(LNK4, "$(P)RANG:MODE PP")
     field(LNK5, "$(P)READ PP")
     field(STR2, "CURR:DC")
-    field(DO3, "0.02")
+    field(DOL3, "$(P)CURR:RANGE:CONST")
     field(DO4, "0")
 }
 
@@ -127,7 +127,7 @@ record(sseq, "$(P)BTN:VOLT")
     field(LNK4, "$(P)RANG:MODE PP")
     field(LNK5, "$(P)READ PP")
     field(STR2, "VOLT:DC")
-    field(DO3, "2")
+    field(DOL3, "$(P)VOLT:RANGE:CONST")
     field(DO4, "1")
 }
 
@@ -137,4 +137,17 @@ record(seq, "$(P)FUNC:REFRESH")
     field(LNK1, "$(P)FUNC PP")
     field(LNK2, "$(P)SYST:ERR PP")
     field(LNK3, "$(P)STAT:QUE PP")
+}
+
+record(stringout, "$(P)CURR:RANGE:CONST")
+{
+    field(SCAN, "Passive")
+    field(VAL, "0.02")
+}
+
+
+record(stringout, "$(P)VOLT:RANGE:CONST")
+{
+    field(SCAN, "Passive")
+    field(VAL, "2")
 }
