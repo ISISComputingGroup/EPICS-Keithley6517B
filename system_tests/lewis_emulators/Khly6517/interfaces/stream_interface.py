@@ -1,10 +1,6 @@
 from lewis.adapters.stream import StreamInterface, Cmd
 from lewis.utils.command_builder import CmdBuilder
 from lewis.core.logging import has_log
-from lewis.utils.replies import conditional_reply
-import random
-
-functions = {0: 'VOLT', 1: 'CURR'}
 
 
 @has_log
@@ -32,7 +28,7 @@ class Khly6517StreamInterface(StreamInterface):
         pass
 
     def get_func(self):
-        return "{}".format(functions[self._device.function])
+        return "{}".format(self._device.selected_data.name.upper())
 
     def get_read(self):
         self._device.abort()
@@ -40,21 +36,17 @@ class Khly6517StreamInterface(StreamInterface):
         return "{}".format(self._device.fetch())
 
     def get_rang(self, mode):
-        if mode.lower() == "volt":
-            return self._device.volt_range
-        elif mode.lower() == "curr":
-            return self._device.curr_range
-        else:
+        try:
+            return self._device.mode_dict[mode.lower()].range
+        except KeyError:
             # Program syntax error
             self._device.add_error(-285)
             return 0
 
     def set_rang(self, mode, rang):
-        if mode.lower() == "volt":
-            self._device.volt_range = rang
-        elif mode.lower() == "curr":
-            self._device.curr_range = rang
-        else:
+        try:
+            self._device.mode_dict[mode.lower()].range = rang
+        except KeyError:
             # Program syntax error
             self._device.add_error(-285)
 
@@ -62,11 +54,9 @@ class Khly6517StreamInterface(StreamInterface):
         self._device.clear_error_queue()
 
     def set_func(self, mode):
-        if mode == "VOLT":
-            self._device.function = 0
-        elif mode == "CURR":
-            self._device.function = 1
-        else:
+        try:
+            self._device.selected_data = self._device.mode_dict[mode.lower()]
+        except KeyError:
             # Program syntax error
             self._device.add_error(-285)
 
