@@ -2,21 +2,30 @@ from collections import OrderedDict
 from .states import DefaultState
 from lewis.devices import StateMachineDevice
 import random
+import queue
+
+
+class Measurement:
+    def __init__(self, name):
+        self.name = name
+        self.range = 0
+        self.values = queue.Queue()
 
 
 class SimulatedKhly6517(StateMachineDevice):
 
     def _initialize_data(self):
-        self.function = 0
         self.latest_reading = 0
         self.idle = True
-        self.volt_range = 0
-        self.curr_range = 0
+
+        self.volt_data = Measurement("volt")
+        self.curr_data = Measurement("curr")
+        self.mode_dict = {measure.name: measure for measure in [self.volt_data, self.curr_data]}
+        self.selected_data = self.volt_data
+
         self.error_queue = []
 
         # Mock data
-        self.volt_values = []
-        self.curr_values = []
         self.random_mode = True
 
     def _get_state_handlers(self):
@@ -42,36 +51,21 @@ class SimulatedKhly6517(StateMachineDevice):
         self.idle = False
         self.measurement()
 
-    def substract_reading(self):
-        if self.function == 0:
-            self.volt_values = self.volt_values[1:]
-        elif self.function == 1:
-            self.curr_values = self.curr_values[1:]
-
-    def get_mode_values(self):
-        if self.function == 0:
-            return [self.volt_range, self.volt_values]
-        elif self.function == 1:
-            return [self.curr_range, self.curr_values]
-
-    def get_ranged_value(self, value):
-        values = self.get_mode_values()
-        if value > values[0]:
+    def get_selected_ranged_value(self):
+        value = self.selected_data.values.get()
+        if value > self.selected_data.range:
             # Parameter data out of range
             self.add_error(-222)
-        return max(min(value, values[0]), 0)
+        return max(min(value, self.selected_data.range), 0)
 
     def add_random_reading(self):
-        values = self.get_mode_values()
-        values[1].append(random.random() * values[0])
+        self.selected_data.values.put(random.random() * self.selected_data.range)
 
     def measurement(self):
         if self.random_mode:
             self.add_random_reading()
-        values = self.get_mode_values()
-        if len(values[1]) > 0:
-            self.latest_reading = self.get_ranged_value(values[1][0])
-            self.substract_reading()
+        if not self.selected_data.values.empty():
+            self.latest_reading = self.get_selected_ranged_value()
         else:
             self.latest_reading = 0
 
@@ -99,7 +93,4 @@ class SimulatedKhly6517(StateMachineDevice):
         self.add_error(10)
 
     def insert_mock_readings(self, readings, mode):
-        if mode.lower() == "volt":
-            self.volt_values += readings
-        elif mode.lower() == "curr":
-            self.curr_values += readings
+        [self.mode_dict[mode.lower()].values.put(reading) for reading in readings]
