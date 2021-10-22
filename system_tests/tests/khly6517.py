@@ -31,10 +31,10 @@ class Khly6517Tests(unittest.TestCase):
         self._lewis, self._ioc = get_running_lewis_and_ioc("Khly6517", DEVICE_PREFIX)
         self.ca = ChannelAccess(default_timeout=5, device_prefix=DEVICE_PREFIX, default_wait_time=0.0)
 
-    def set_pv(self, pvName, pvVal):
-        self.ca.assert_that_pv_exists(pvName)
-        self.ca.set_pv_value(pvName, pvVal)
-        self.ca.assert_that_pv_is(pvName, pvVal)
+    #def set_pv(self, pvName, pvVal):
+        #self.ca.assert_that_pv_exists(pvName)
+        #self.ca.set_pv_value(pvName, pvVal)
+        #self.ca.assert_that_pv_is(pvName, pvVal)
 
     def test_WHEN_set_pv_is_set_THEN_pv_updated_func(self):
         self.ca.assert_setting_setpoint_sets_readback("VOLT:DC", "FUNC", "FUNC:SP", "VOLT")
@@ -52,7 +52,7 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_exists("*CLS")
         self.ca.process_pv("*CLS")
 
-        self.set_pv("FUNC:SP", "CURR:DC")
+        self.ca.assert_setting_setpoint_sets_readback("CURR:DC", "FUNC", "FUNC:SP", "CURR")
         # This will add errors in following sequence to the device: 2, 5, 10 which then should be read by PVs
         self._lewis.backdoor_run_function_on_device("add_mock_errors")
         # Note that behaviour below is strange due to SYST:ERR and STAT:QUE doing the same thing
@@ -104,9 +104,9 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("SYST:ERR", 0)
         self.ca.assert_that_pv_is("STAT:QUE", 0)
 
-    def button_and_check(self, expectedReading, buttonPV):
-        self.ca.process_pv(buttonPV)
-        self.ca.assert_that_pv_is("READ", str(expectedReading))
+    def button_and_check(self, expected_reading, button_pv):
+        self.ca.process_pv(button_pv)
+        self.ca.assert_that_pv_is("READ", str(expected_reading))
 
     def test_WHEN_buttons_pressed_THEN_readings_read_from_device(self):
         self._lewis.backdoor_set_on_device("random_mode", False)
@@ -123,9 +123,9 @@ class Khly6517Tests(unittest.TestCase):
         # Order of checking this should not matter
         volt = "BTN:VOLT"
         curr = "BTN:CURR"
-        checkingOrder = ((0, volt), (1, volt), (0, curr), (2, volt), (1, curr), (2, curr), (3, curr), (3, volt))
-        for i in range(len(test_data_volt) + len(test_data_curr)):
-            if checkingOrder[i][1] == volt:
-                self.button_and_check(test_answer_expected_volt[checkingOrder[i][0]], volt)
-            elif checkingOrder[i][1] == curr:
-                self.button_and_check(test_answer_expected_curr[checkingOrder[i][0]], curr)
+        checking_order = ((0, volt), (1, volt), (0, curr), (2, volt), (1, curr), (2, curr), (3, curr), (3, volt))
+        for check in checking_order:
+            index = check[0]
+            context = check[1]
+            self.button_and_check(test_answer_expected_volt[index] if context == volt
+                                  else test_answer_expected_curr[index], context)
