@@ -188,18 +188,48 @@ record(seq, "$(P)FUNC:REFRESH")
     field(LNK3, "$(P)STAT:QUE PP")
 }
 
+record(stringout, "$(P)POLLING:MODE")
+{
+    field(SCAN, "Passive")
+    field(VAL, "One-Shot")
+}
+
+record(seq, "$(P)POLLING")
+{
+    field(SCAN, "Passive")
+    field(LNK1, "$(P)READ PP")
+}
+
+record(sseq, "$(P)POLLING:ENABLE")
+{
+    field(SCAN, "Passive")
+    field(LNK1, "$(P)POLLING.SCAN")
+    field(STR1, "1 second")
+    field(LNK2, "$(P)POLLING:MODE.VAL PP")
+    field(STR2, "Continuous")
+}
+
+record(sseq, "$(P)POLLING:DISABLE")
+{
+    field(SCAN, "Passive")
+    field(LNK1, "$(P)POLLING.SCAN")
+    field(STR1, "Passive")
+    field(LNK2, "$(P)POLLING:MODE.VAL PP")
+    field(STR2, "One-Shot")
+}
+
 record(stringout, "$(P)CURR:RANGE:CONST")
 {
     field(SCAN, "Passive")
     field(VAL, "0.02")
 }
 
-
 record(stringout, "$(P)VOLT:RANGE:CONST")
 {
     field(SCAN, "Passive")
     field(VAL, "2")
 }
+
 ### SIMULATION RECORDS ###
 
 record(ao,"$(P)SIM:*CLS")

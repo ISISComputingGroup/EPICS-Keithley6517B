@@ -31,24 +31,21 @@ class Khly6517Tests(unittest.TestCase):
         self._lewis, self._ioc = get_running_lewis_and_ioc("Khly6517", DEVICE_PREFIX)
         self.ca = ChannelAccess(default_timeout=5, device_prefix=DEVICE_PREFIX, default_wait_time=0.0)
 
-    #def set_pv(self, pvName, pvVal):
-        #self.ca.assert_that_pv_exists(pvName)
-        #self.ca.set_pv_value(pvName, pvVal)
-        #self.ca.assert_that_pv_is(pvName, pvVal)
-
     def test_WHEN_set_pv_is_set_THEN_pv_updated_func(self):
         self.ca.assert_setting_setpoint_sets_readback("VOLT:DC", "FUNC", "FUNC:SP", "VOLT")
         self.ca.assert_setting_setpoint_sets_readback("CURR:DC", "FUNC", "FUNC:SP", "CURR")
 
     @parameterized.expand([
-        (10, ),
-        (5, )
+        (10,),
+        (5,)
     ])
     def test_WHEN_set_pv_is_set_THEN_pv_updated_rang(self, setpoint):
-        self.ca.assert_setting_setpoint_sets_readback(setpoint, "CURR:DC:RANG", "CURR:DC:RANG:SP", str(setpoint)+".0")
+        self.ca.process_pv("POLLING:DISABLE")
+        self.ca.assert_setting_setpoint_sets_readback(setpoint, "CURR:DC:RANG", "CURR:DC:RANG:SP", str(setpoint) + ".0")
 
     def test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown(self):
         # First lets make sure queue is clear
+        self.ca.process_pv("POLLING:DISABLE")
         self.ca.assert_that_pv_exists("*CLS")
         self.ca.process_pv("*CLS")
 
@@ -63,11 +60,12 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("SYST:ERR", 10, 3)
 
     @parameterized.expand([
-        ("BTN:CURR", ),
-        ("BTN:VOLT", )
+        ("BTN:CURR",),
+        ("BTN:VOLT",)
     ])
     def test_WHEN_button_pressed_THEN_queue_cleared(self, btn):
         # First lets make sure queue is clear
+        self.ca.process_pv("POLLING:DISABLE")
         self.ca.assert_that_pv_exists("*CLS")
         self.ca.process_pv("*CLS")
 
@@ -85,6 +83,7 @@ class Khly6517Tests(unittest.TestCase):
         ("BTN:VOLT", "VOLT", "VOLT:DC:RANG", "2.0", 1)
     ])
     def test_WHEN_button_current_pressed_THEN_PVs_set(self, btn, mode, rang_mode, setpoint, btn_status):
+        self.ca.process_pv("POLLING:DISABLE")
         self.ca.process_pv(btn)
         # Test above checks for CLS separately
         self.ca.assert_that_pv_is("FUNC", mode)
@@ -95,6 +94,7 @@ class Khly6517Tests(unittest.TestCase):
 
     def test_WHEN_errors_added_THEN_refresh_clears_queue_over_time(self):
         # First lets make sure queue is clear
+        self.ca.process_pv("POLLING:DISABLE")
         self.ca.assert_that_pv_exists("*CLS")
         self.ca.process_pv("*CLS")
 
@@ -105,10 +105,12 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("STAT:QUE", 0)
 
     def button_and_check(self, expected_reading, button_pv):
+        self.ca.process_pv("POLLING:DISABLE")
         self.ca.process_pv(button_pv)
         self.ca.assert_that_pv_is("READ", str(expected_reading))
 
     def test_WHEN_buttons_pressed_THEN_readings_read_from_device(self):
+        self.ca.process_pv("POLLING:DISABLE")
         self._lewis.backdoor_set_on_device("random_mode", False)
         test_data_volt = [0.1, 1.1, 2.0, 2.5]
         test_data_curr = [0.005, 0.01, 0.02, 0.03]
@@ -129,3 +131,31 @@ class Khly6517Tests(unittest.TestCase):
             context = check[1]
             self.button_and_check(test_answer_expected_volt[index] if context == volt
                                   else test_answer_expected_curr[index], context)
+
+    def button_and_check_reading(self, button, equals):
+        self.ca.process_pv(button)
+        # Give time for btn to process
+        time.sleep(1)
+        expected_reading = self.ca.get_pv_value("READ")
+        # Reading would change in given time if continuous on
+        time.sleep(3)
+        if equals:
+            self.ca.assert_that_pv_is("READ", expected_reading)
+        else:
+            self.ca.assert_that_pv_is_not("READ", expected_reading)
+
+    def test_WHEN_one_shot_polling_set_THEN_read_only_on_demand(self):
+        self._lewis.backdoor_set_on_device("random_mode", True)
+        self.ca.process_pv("POLLING:DISABLE")
+        self.ca.assert_that_pv_is("POLLING:MODE", "One-Shot")
+
+        self.button_and_check_reading("BTN:CURR", True)
+        self.button_and_check_reading("BTN:VOLT", True)
+
+    def test_WHEN_continuous_polling_set_THEN_read_at_intervals(self):
+        self._lewis.backdoor_set_on_device("random_mode", True)
+        self.ca.process_pv("POLLING:ENABLE")
+        self.ca.assert_that_pv_is("POLLING:MODE", "Continuous")
+
+        self.button_and_check_reading("BTN:CURR", False)
+        self.button_and_check_reading("BTN:VOLT", False)
