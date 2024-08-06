@@ -14,8 +14,22 @@ class Khly6517StreamInterface(StreamInterface):
         CmdBuilder("set_rang").arg("CURR|VOLT").escape(":DC:RANG ").float().eos().build(),
         CmdBuilder("set_rang").arg("curr|volt").escape(":dc:rang ").float().eos().build(),
         # According to the manual, SYST:ERR? and STAT:QUE? perform the same function (14-124 in manual)
-        CmdBuilder("get_err").escape(":SYST").optional("em").escape(":ERR").optional("or").escape("?").eos().build(),
-        CmdBuilder("get_err").escape(":STAT").optional("us").escape(":QUE").optional("ue").escape("?").eos().build(),
+        CmdBuilder("get_err")
+        .escape(":SYST")
+        .optional("em")
+        .escape(":ERR")
+        .optional("or")
+        .escape("?")
+        .eos()
+        .build(),
+        CmdBuilder("get_err")
+        .escape(":STAT")
+        .optional("us")
+        .escape(":QUE")
+        .optional("ue")
+        .escape("?")
+        .eos()
+        .build(),
     }
 
     in_terminator = "\r\n"
