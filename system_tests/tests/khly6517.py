@@ -1,12 +1,11 @@
+import time
 import unittest
 
+from parameterized import parameterized
 from utils.channel_access import ChannelAccess
 from utils.ioc_launcher import get_default_ioc_dir
 from utils.test_modes import TestModes
-from utils.testing import get_running_lewis_and_ioc, skip_if_recsim
-from parameterized import parameterized
-import time
-import random
+from utils.testing import get_running_lewis_and_ioc
 
 DEVICE_PREFIX = "KHLY6517_01"
 
@@ -29,19 +28,20 @@ class Khly6517Tests(unittest.TestCase):
 
     def setUp(self):
         self._lewis, self._ioc = get_running_lewis_and_ioc("Khly6517", DEVICE_PREFIX)
-        self.ca = ChannelAccess(default_timeout=5, device_prefix=DEVICE_PREFIX, default_wait_time=0.0)
+        self.ca = ChannelAccess(
+            default_timeout=5, device_prefix=DEVICE_PREFIX, default_wait_time=0.0
+        )
 
     def test_WHEN_set_pv_is_set_THEN_pv_updated_func(self):
         self.ca.assert_setting_setpoint_sets_readback("VOLT:DC", "FUNC", "FUNC:SP", "VOLT")
         self.ca.assert_setting_setpoint_sets_readback("CURR:DC", "FUNC", "FUNC:SP", "CURR")
 
-    @parameterized.expand([
-        (10,),
-        (5,)
-    ])
+    @parameterized.expand([(10,), (5,)])
     def test_WHEN_set_pv_is_set_THEN_pv_updated_rang(self, setpoint):
         self.ca.process_pv("POLLING:DISABLE")
-        self.ca.assert_setting_setpoint_sets_readback(setpoint, "CURR:DC:RANG", "CURR:DC:RANG:SP", str(setpoint) + ".0")
+        self.ca.assert_setting_setpoint_sets_readback(
+            setpoint, "CURR:DC:RANG", "CURR:DC:RANG:SP", str(setpoint) + ".0"
+        )
 
     def test_WHEN_periodic_refresh_scanned_THEN_func_updated_and_errors_shown(self):
         # First lets make sure queue is clear
@@ -59,10 +59,7 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("STAT:QUE", 5, 3)
         self.ca.assert_that_pv_is("SYST:ERR", 10, 3)
 
-    @parameterized.expand([
-        ("BTN:CURR",),
-        ("BTN:VOLT",)
-    ])
+    @parameterized.expand([("BTN:CURR",), ("BTN:VOLT",)])
     def test_WHEN_button_pressed_THEN_queue_cleared(self, btn):
         # First lets make sure queue is clear
         self.ca.process_pv("POLLING:DISABLE")
@@ -78,11 +75,15 @@ class Khly6517Tests(unittest.TestCase):
         self.ca.assert_that_pv_is("SYST:ERR", 0)
         self.ca.assert_that_pv_is("STAT:QUE", 0)
 
-    @parameterized.expand([
-        ("BTN:CURR", "CURR", "CURR:DC:RANG", "0.02", 0),
-        ("BTN:VOLT", "VOLT", "VOLT:DC:RANG", "2.0", 1)
-    ])
-    def test_WHEN_button_current_pressed_THEN_PVs_set(self, btn, mode, rang_mode, setpoint, btn_status):
+    @parameterized.expand(
+        [
+            ("BTN:CURR", "CURR", "CURR:DC:RANG", "0.02", 0),
+            ("BTN:VOLT", "VOLT", "VOLT:DC:RANG", "2.0", 1),
+        ]
+    )
+    def test_WHEN_button_current_pressed_THEN_PVs_set(
+        self, btn, mode, rang_mode, setpoint, btn_status
+    ):
         self.ca.process_pv("POLLING:DISABLE")
         self.ca.process_pv(btn)
         # Test above checks for CLS separately
@@ -119,18 +120,35 @@ class Khly6517Tests(unittest.TestCase):
 
         # Behaviour expected is that last value is above range so it should be clamped and device gives error
         # Second-to-last value is currently hard-coded max
-        self._lewis.backdoor_run_function_on_device("insert_mock_readings", (test_data_volt, "volt"))
-        self._lewis.backdoor_run_function_on_device("insert_mock_readings", (test_data_curr, "curr"))
+        self._lewis.backdoor_run_function_on_device(
+            "insert_mock_readings", (test_data_volt, "volt")
+        )
+        self._lewis.backdoor_run_function_on_device(
+            "insert_mock_readings", (test_data_curr, "curr")
+        )
 
         # Order of checking this should not matter
         volt = "BTN:VOLT"
         curr = "BTN:CURR"
-        checking_order = ((0, volt), (1, volt), (0, curr), (2, volt), (1, curr), (2, curr), (3, curr), (3, volt))
+        checking_order = (
+            (0, volt),
+            (1, volt),
+            (0, curr),
+            (2, volt),
+            (1, curr),
+            (2, curr),
+            (3, curr),
+            (3, volt),
+        )
         for check in checking_order:
             index = check[0]
             context = check[1]
-            self.button_and_check(test_answer_expected_volt[index] if context == volt
-                                  else test_answer_expected_curr[index], context)
+            self.button_and_check(
+                test_answer_expected_volt[index]
+                if context == volt
+                else test_answer_expected_curr[index],
+                context,
+            )
 
     def button_and_check_reading(self, button, equals):
         self.ca.process_pv(button)
