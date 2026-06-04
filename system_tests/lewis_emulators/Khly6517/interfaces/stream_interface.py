@@ -30,6 +30,10 @@ class Khly6517StreamInterface(StreamInterface):
         .escape("?")
         .eos()
         .build(),
+        CmdBuilder("get_zero_check").escape(":SYST:ZCH?").eos().build(),
+        CmdBuilder("set_zero_check").escape(":SYST:ZCH ").any().eos().build(),
+        CmdBuilder("get_curr_autorange").escape(":SENS:CURR:RANG:AUTO?").eos().build(),
+        CmdBuilder("set_curr_autorange").escape(":SENS:CURR:RANG:AUTO ").any().eos().build(),
     }
 
     in_terminator = "\r\n"
@@ -76,3 +80,15 @@ class Khly6517StreamInterface(StreamInterface):
 
     def get_err(self):
         return self._device.get_error()
+
+    def get_curr_autorange(self):
+        return "ON" if self._device.curr_autorange else "OFF"
+
+    def set_curr_autorange(self, curr_autorange):
+        self._device.curr_autorange = curr_autorange in ("ON", 1)
+
+    def get_zero_check(self):
+        return "ON" if self._device.zero_check else "OFF"
+
+    def set_zero_check(self, zero_check):
+        self._device.zero_check = zero_check in ("ON", 1)

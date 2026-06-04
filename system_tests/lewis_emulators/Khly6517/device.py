@@ -26,6 +26,9 @@ class SimulatedKhly6517(StateMachineDevice):
 
         self.error_queue = []
 
+        self.curr_autorange = False
+        self.zero_check = False
+
         # Mock data
         self.random_mode = True
 

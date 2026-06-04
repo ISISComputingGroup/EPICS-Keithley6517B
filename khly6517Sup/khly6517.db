@@ -17,6 +17,40 @@ record(bo, "$(P)DISABLE")
     field(ONAM, "COMMS DISABLED")
 }
 
+record(bi, "$(P)ZEROCHECK") {
+    field(DESC, "Zero-check status")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getZeroCheck $(PORT)")
+	field(SCAN, "2 second")
+    field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "$(P)ZEROCHECK:SP") {
+    field(DESC, "Zero-check set")
+    field(DTYP, "stream")
+    field(OUT, "@khly6517.proto setZeroCheck $(PORT)")
+    field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bi, "$(P)CURR:AUTORANGE") {
+    field(DESC, "Current autorange")
+    field(DTYP, "stream")
+    field(INP, "@khly6517.proto getCurrAutorange $(PORT)")
+	field(SCAN, "2 second")
+    field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
+record(bo, "$(P)CURR:AUTORANGE:SP") {
+    field(DESC, "Current autorange set")
+    field(DTYP, "stream")
+    field(OUT, "@khly6517.proto setCurrAutorange $(PORT)")
+    field(ZNAM, "OFF")
+	field(ONAM, "ON")
+}
+
 record(stringin, "$(P)FUNC")
 {
     field(SCAN, "Passive")

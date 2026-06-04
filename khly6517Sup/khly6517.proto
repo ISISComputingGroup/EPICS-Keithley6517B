@@ -59,3 +59,21 @@ setVoltage {
 setCurrent {
     out "FUNC CURR"
 }
+
+getZeroCheck {
+    out ":SYST:ZCH?";
+	in "%#{OFF=0|0=0|ON=1|1=1}";
+}
+
+setZeroCheck {
+    out ":SYST:ZCH %{OFF|ON}";
+}
+
+getCurrAutorange {
+    out ":SENS:CURR:RANG:AUTO?";
+	in "%#{OFF=0|0=0|ON=1|1=1}";
+}
+
+setCurrAutorange {
+    out ":SENS:CURR:RANG:AUTO %{OFF|ON}";
+}
