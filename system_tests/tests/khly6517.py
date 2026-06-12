@@ -177,3 +177,11 @@ class Khly6517Tests(unittest.TestCase):
 
         self.button_and_check_reading("BTN:CURR", False)
         self.button_and_check_reading("BTN:VOLT", False)
+
+    def test_curr_autorange(self):
+        self.ca.assert_setting_setpoint_sets_readback("ON", "CURR:AUTORANGE")
+        self.ca.assert_setting_setpoint_sets_readback("OFF", "CURR:AUTORANGE")
+
+    def test_zero_check(self):
+        self.ca.assert_setting_setpoint_sets_readback("ON", "ZEROCHECK")
+        self.ca.assert_setting_setpoint_sets_readback("OFF", "ZEROCHECK")
